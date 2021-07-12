@@ -26,6 +26,7 @@ abstract class BaseFormatter<N extends Node> implements Formatter<N> {
         return output.toString();
     }
 
+    @SuppressWarnings("unchecked")
     private static <N extends Node> Formatter<N> formatterFor(FormatterFactory formatterFactory, N node) {
         if (node instanceof Document) {
             return (Formatter<N>) formatterFactory.documentFormatter();
