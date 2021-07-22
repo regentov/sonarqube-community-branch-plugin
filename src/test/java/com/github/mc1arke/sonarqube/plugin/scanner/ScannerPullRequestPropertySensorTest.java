@@ -1,6 +1,5 @@
 package com.github.mc1arke.sonarqube.plugin.scanner;
 
-import com.github.mc1arke.sonarqube.plugin.ce.pullrequest.gitlab.GitlabMergeRequestDecorator;
 import org.junit.Test;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
@@ -25,48 +24,23 @@ public class ScannerPullRequestPropertySensorTest {
 
     @Test
     public void testPropertySensorWithGitlabCIEnvValues() throws IOException {
-        
+
         Path temp = Files.createTempDirectory("sensor");
 
         DefaultInputFile inputFile = new TestInputFileBuilder("foo", "src/Foo.xoo").initMetadata("a\nb\nc\nd\ne\nf\ng\nh\ni\n").build();
         SensorContextTester context = SensorContextTester.create(temp);
-        context.fileSystem().add(inputFile);        
+        context.fileSystem().add(inputFile);
 
         when(system2.envVariable("GITLAB_CI")).thenReturn("true");
-        when(system2.envVariable("CI_API_V4_URL")).thenReturn("value");
-        when(system2.envVariable("CI_PROJECT_PATH")).thenReturn("value");
-        when(system2.envVariable("CI_MERGE_REQUEST_PROJECT_URL")).thenReturn("value");
         when(system2.envVariable("CI_PIPELINE_ID")).thenReturn("value");
+        when(system2.envVariable("CI_MERGE_REQUEST_PROJECT_URL")).thenReturn("value");
 
         ScannerPullRequestPropertySensor sensor = new ScannerPullRequestPropertySensor(system2);
         sensor.execute(context);
 
         Map<String, String> properties = context.getContextProperties();
 
-        assertEquals(4, properties.size());        
-    }    
-
-    @Test
-    public void testPropertySensorWithGitlabEnvValues() throws IOException {
-        
-        Path temp = Files.createTempDirectory("sensor");
-
-        DefaultInputFile inputFile = new TestInputFileBuilder("foo", "src/Foo.xoo").initMetadata("a\nb\nc\nd\ne\nf\ng\nh\ni\n").build();
-        SensorContextTester context = SensorContextTester.create(temp);
-        context.fileSystem().add(inputFile);        
-
-        when(system2.envVariable("GITLAB_CI")).thenReturn("false");
-        when(system2.property(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_INSTANCE_URL)).thenReturn("value");
-        when(system2.property(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PROJECT_ID)).thenReturn("value");
-        when(system2.property(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PROJECT_URL)).thenReturn("value");
-        when(system2.property(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PIPELINE_ID)).thenReturn("value");
-
-        ScannerPullRequestPropertySensor sensor = new ScannerPullRequestPropertySensor(system2);
-        sensor.execute(context);
-
-        Map<String, String> properties = context.getContextProperties();
-
-        assertEquals(4, properties.size());        
+        assertEquals(2, properties.size());
     }
 
     @Test

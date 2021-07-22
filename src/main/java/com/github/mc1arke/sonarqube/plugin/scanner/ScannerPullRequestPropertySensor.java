@@ -44,26 +44,12 @@ public class ScannerPullRequestPropertySensor implements Sensor {
     @Override
     public void execute(SensorContext sensorContext) {
         if (Boolean.parseBoolean(system2.envVariable("GITLAB_CI"))) {
-            Optional.ofNullable(system2.envVariable("CI_API_V4_URL")).ifPresent(v -> sensorContext
-                    .addContextProperty(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_INSTANCE_URL, v));
-            Optional.ofNullable(system2.envVariable("CI_PROJECT_PATH")).ifPresent(v -> sensorContext
-                    .addContextProperty(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PROJECT_ID, v));
             Optional.ofNullable(system2.envVariable("CI_MERGE_REQUEST_PROJECT_URL")).ifPresent(v -> sensorContext
                     .addContextProperty(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PROJECT_URL, v));
             Optional.ofNullable(system2.envVariable("CI_PIPELINE_ID")).ifPresent(v -> sensorContext
                     .addContextProperty(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PIPELINE_ID, v));
         }
 
-        Optional.ofNullable(system2.property(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_INSTANCE_URL)).ifPresent(
-                v -> sensorContext.addContextProperty(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_INSTANCE_URL, v));
-        Optional.ofNullable(system2.property(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PROJECT_ID)).ifPresent(
-                v -> sensorContext.addContextProperty(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PROJECT_ID, v));
-        Optional.ofNullable(system2.property(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PROJECT_URL)).ifPresent(
-                v -> sensorContext.addContextProperty(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PROJECT_URL, v));
-        Optional.ofNullable(system2.property(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PIPELINE_ID)).ifPresent(
-                v -> sensorContext.addContextProperty(GitlabMergeRequestDecorator.PULLREQUEST_GITLAB_PIPELINE_ID, v));
-
-        // AZURE DEVOPS
         if (Boolean.parseBoolean(system2.envVariable("TF_BUILD"))) {
             Optional.ofNullable(system2.envVariable("SYSTEM_PULLREQUEST_PULLREQUESTID")).ifPresent(
                     v -> sensorContext.addContextProperty(ScannerProperties.PULL_REQUEST_KEY, v));
